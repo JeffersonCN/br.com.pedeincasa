@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 
 var gulp = require('gulp');
+var browserSync = require('browser-sync').create();
 
 // Load all gulp plugins automatically
 // and attach them to the `plugins` object
@@ -168,5 +169,24 @@ gulp.task('build', function (done) {
         'copy',
     done);
 });
+
+gulp.task('serve', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./dist"
+        }
+    });
+
+    gulp.watch("dist/*.html").on('change', browserSync.reload);
+    gulp.watch("dist/**/*.css").on('change', browserSync.reload);
+    gulp.watch("dist/**/*.js").on('change', browserSync.reload);
+});
+
+gulp.task('watch', ['serve'], function() {
+    gulp.watch('src/css/main.css', ['copy:main.css']);
+    gulp.watch('src/index.html', ['copy:index.html']);
+});
+
+
 
 gulp.task('default', ['build']);
